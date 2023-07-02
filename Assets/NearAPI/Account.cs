@@ -22,6 +22,13 @@ namespace Near
             _accountId = accId;
         }
 
+        public async Task<string> FunctionViewAsync(string method, object args = null)
+        {
+            var jsonArgs = JsonConvert.SerializeObject(args ?? new { });
+            var data = Base58.Encode(Encoding.UTF8.GetBytes(jsonArgs));
+            return await _provider.QueryAsync($"call/{_accountId}/{method}", data);
+        }
+
         public async Task<FinalExecutionOutcome> FunctionCallAsync(string method, object args = null, ulong? gas = null, Nullable<UInt128> amount = null)
         {
             var jsonArgs = JsonConvert.SerializeObject(args ?? new { });
